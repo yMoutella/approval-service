@@ -34,7 +34,17 @@ public class ApprovalController {
     @GetMapping()
     public ResponseEntity<Object> listApprovals() {
         List<ApprovalEntity> approvals = approvalService.listApprovals();
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body(approvals);
+        return ResponseEntity.status(HttpStatus.OK).body(approvals);
+    }
+
+    @GetMapping(value = "/{approval_id}")
+    public ResponseEntity<Object> listApprovals(@PathVariable UUID approval_id) {
+        var approval = approvalService.getApproval(approval_id);
+
+        if (approval.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Approval not found!");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(approval.get());
     }
 
     @PostMapping()
@@ -46,7 +56,7 @@ public class ApprovalController {
 
         approval.setExpense_id(approvalDto.getExpense_id());
         approvalService.saveApproval(approval);
-        return ResponseEntity.status(HttpStatus.ACCEPTED).body("");
+        return ResponseEntity.status(HttpStatus.CREATED).body("");
     }
 
     @PatchMapping(value = "/{approval_id}")
@@ -66,6 +76,8 @@ public class ApprovalController {
         approvalEntity.setStatus(approvalDto.getStatus());
 
         approvalService.saveApproval(approvalEntity);
+
+        // Fetch the expenses-service to update the expense status;
 
         return ResponseEntity.status(HttpStatus.OK).body("Approval updated successfully");
     }
