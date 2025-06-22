@@ -36,7 +36,7 @@ public class ApprovalController {
     }
 
     @GetMapping(value = "/{approval_id}")
-    public ResponseEntity<Object> listApprovals(@PathVariable UUID approval_id) {
+    public ResponseEntity<Object> getApproval(@PathVariable UUID approval_id) {
 
         var approval = approvalService.getApproval(approval_id);
         return ResponseEntity.status(HttpStatus.OK).body(approval);
