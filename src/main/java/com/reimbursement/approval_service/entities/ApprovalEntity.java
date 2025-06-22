@@ -22,7 +22,7 @@ import lombok.Data;
 public class ApprovalEntity {
 
     public ApprovalEntity() {
-        this.status = status.PENDING;
+        this.status = Status.PENDING;
         this.created_at = LocalDateTime.now(ZoneId.of("UTC"));
         this.updated_at = LocalDateTime.now(ZoneId.of("UTC"));
         this.deleted_at = null;

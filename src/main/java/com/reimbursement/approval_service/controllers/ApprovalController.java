@@ -1,7 +1,5 @@
 package com.reimbursement.approval_service.controllers;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,12 +37,9 @@ public class ApprovalController {
 
     @GetMapping(value = "/{approval_id}")
     public ResponseEntity<Object> listApprovals(@PathVariable UUID approval_id) {
-        var approval = approvalService.getApproval(approval_id);
 
-        if (approval.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Approval not found!");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(approval.get());
+        var approval = approvalService.getApproval(approval_id);
+        return ResponseEntity.status(HttpStatus.OK).body(approval);
     }
 
     @PostMapping()
@@ -52,11 +47,8 @@ public class ApprovalController {
     public ResponseEntity<?> createApproval(
             @RequestBody @Validated(ApprovalView.CreateApproval.class) ApprovalDto approvalDto) {
 
-        ApprovalEntity approval = new ApprovalEntity();
-
-        approval.setExpense_id(approvalDto.getExpense_id());
-        approvalService.saveApproval(approval);
-        return ResponseEntity.status(HttpStatus.CREATED).body("");
+        approvalService.saveApproval(approvalDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Approval created!");
     }
 
     @PatchMapping(value = "/{approval_id}")
@@ -65,19 +57,7 @@ public class ApprovalController {
             @RequestBody @Validated(ApprovalView.UpdateApproval.class) ApprovalDto approvalDto,
             @PathVariable UUID approval_id) {
 
-        var approval = approvalService.getApproval(approval_id);
-
-        if (approval.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Approval not found!");
-        }
-
-        ApprovalEntity approvalEntity = approval.get();
-        approvalEntity.setUpdated_at(LocalDateTime.now(ZoneId.of("UTC")));
-        approvalEntity.setStatus(approvalDto.getStatus());
-
-        approvalService.saveApproval(approvalEntity);
-
-        // Fetch the expenses-service to update the expense status;
+        approvalService.saveApproval(approvalDto.getStatus(), approval_id);
 
         return ResponseEntity.status(HttpStatus.OK).body("Approval updated successfully");
     }
