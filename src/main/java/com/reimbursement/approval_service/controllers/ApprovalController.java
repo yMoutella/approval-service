@@ -1,9 +1,12 @@
 package com.reimbursement.approval_service.controllers;
 
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -20,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.reimbursement.approval_service.dtos.ApprovalDto;
 import com.reimbursement.approval_service.entities.ApprovalEntity;
 import com.reimbursement.approval_service.services.ApprovalService;
+import com.reimbursement.approval_service.specifications.ApprovalSpecification;
 import com.reimbursement.approval_service.views.ApprovalView;
 
 @RestController
@@ -31,9 +35,11 @@ public class ApprovalController {
     ApprovalService approvalService;
 
     @GetMapping()
-    public ResponseEntity<Object> listApprovals() {
-        List<ApprovalEntity> approvals = approvalService.listApprovals();
-        return ResponseEntity.status(HttpStatus.OK).body(approvals);
+    public ResponseEntity<Object> listApprovals(ApprovalSpecification spec,
+            @PageableDefault(page = 0, size = 10, direction = Sort.Direction.ASC) Pageable page) {
+
+        Page<ApprovalEntity> approvals = approvalService.listApprovals(spec, page);
+        return ResponseEntity.status(HttpStatus.OK).body(approvals.getContent());
     }
 
     @GetMapping(value = "/{approval_id}")
