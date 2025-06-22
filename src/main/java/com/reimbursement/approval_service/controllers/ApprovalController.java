@@ -1,7 +1,5 @@
 package com.reimbursement.approval_service.controllers;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.UUID;
 
@@ -9,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,13 +37,10 @@ public class ApprovalController {
     }
 
     @GetMapping(value = "/{approval_id}")
-    public ResponseEntity<Object> listApprovals(@PathVariable UUID approval_id) {
-        var approval = approvalService.getApproval(approval_id);
+    public ResponseEntity<Object> getApproval(@PathVariable UUID approval_id) {
 
-        if (approval.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Approval not found!");
-        }
-        return ResponseEntity.status(HttpStatus.OK).body(approval.get());
+        var approval = approvalService.getApproval(approval_id);
+        return ResponseEntity.status(HttpStatus.OK).body(approval);
     }
 
     @PostMapping()
@@ -52,11 +48,8 @@ public class ApprovalController {
     public ResponseEntity<?> createApproval(
             @RequestBody @Validated(ApprovalView.CreateApproval.class) ApprovalDto approvalDto) {
 
-        ApprovalEntity approval = new ApprovalEntity();
-
-        approval.setExpense_id(approvalDto.getExpense_id());
-        approvalService.saveApproval(approval);
-        return ResponseEntity.status(HttpStatus.CREATED).body("");
+        approvalService.saveApproval(approvalDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Approval created!");
     }
 
     @PatchMapping(value = "/{approval_id}")
@@ -65,21 +58,20 @@ public class ApprovalController {
             @RequestBody @Validated(ApprovalView.UpdateApproval.class) ApprovalDto approvalDto,
             @PathVariable UUID approval_id) {
 
-        var approval = approvalService.getApproval(approval_id);
+        approvalService.saveApproval(approvalDto.getStatus(), approval_id);
 
-        if (approval.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Approval not found!");
-        }
-
-        ApprovalEntity approvalEntity = approval.get();
-        approvalEntity.setUpdated_at(LocalDateTime.now(ZoneId.of("UTC")));
-        approvalEntity.setStatus(approvalDto.getStatus());
-
-        approvalService.saveApproval(approvalEntity);
-
-        // Fetch the expenses-service to update the expense status;
+        // Update Expenses-service
 
         return ResponseEntity.status(HttpStatus.OK).body("Approval updated successfully");
+    }
+
+    @DeleteMapping(value = "/{approval_id}")
+    public ResponseEntity<?> deleteApproval(
+            @PathVariable UUID approval_id) {
+
+        approvalService.deleteApproval(approval_id);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Approval deleted!");
     }
 
 }
