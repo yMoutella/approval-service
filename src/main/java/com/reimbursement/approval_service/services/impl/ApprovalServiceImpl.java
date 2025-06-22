@@ -12,6 +12,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.reimbursement.approval_service.dtos.ApprovalDto;
 import com.reimbursement.approval_service.entities.ApprovalEntity;
 import com.reimbursement.approval_service.enums.Status;
+import com.reimbursement.approval_service.exceptions.ResourceNotFound;
 import com.reimbursement.approval_service.mappers.ApprovalMapper;
 import com.reimbursement.approval_service.repositories.ApprovalRepository;
 import com.reimbursement.approval_service.services.ApprovalService;
@@ -49,7 +50,7 @@ public class ApprovalServiceImpl implements ApprovalService {
         var approvalOp = repository.findById(approval_id);
 
         if (approvalOp.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "approval_id: " + approval_id + " not found!");
+            throw new ResourceNotFound("approval_id: " + approval_id + " not found!");
         }
 
         try {
@@ -69,10 +70,30 @@ public class ApprovalServiceImpl implements ApprovalService {
         var approvalOp = repository.findById(approval_id);
 
         if (approvalOp.isEmpty()) {
-            throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "approval_id: " + approval_id + " not found!");
+            throw new ResourceNotFound("approval_id: " + approval_id + " not found!");
         }
 
         return approvalOp.get();
+
+    }
+
+    @Override
+    public void deleteApproval(UUID approval_id) {
+
+        var approvalOp = repository.findById(approval_id);
+
+        if (approvalOp.isEmpty()) {
+            throw new ResourceNotFound("approval_id: " + approval_id + " not found!");
+        }
+
+        ApprovalEntity approval = approvalOp.get();
+        approval.setDeleted_at(LocalDateTime.now(ZoneId.of("UTC")));
+
+        try {
+            repository.save(approval);
+        } catch (Exception e) {
+            throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
+        }
 
     }
 

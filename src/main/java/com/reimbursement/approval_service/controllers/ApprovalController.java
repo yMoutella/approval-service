@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,7 +60,18 @@ public class ApprovalController {
 
         approvalService.saveApproval(approvalDto.getStatus(), approval_id);
 
+        // Update Expenses-service
+
         return ResponseEntity.status(HttpStatus.OK).body("Approval updated successfully");
+    }
+
+    @DeleteMapping(value = "/{approval_id}")
+    public ResponseEntity<?> deleteApproval(
+            @PathVariable UUID approval_id) {
+
+        approvalService.deleteApproval(approval_id);
+
+        return ResponseEntity.status(HttpStatus.OK).body("Approval deleted!");
     }
 
 }

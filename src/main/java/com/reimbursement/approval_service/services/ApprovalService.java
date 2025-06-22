@@ -16,4 +16,6 @@ public interface ApprovalService {
     public void saveApproval(ApprovalDto approvalDto);
 
     public void saveApproval(Status status, UUID approval_id);
+
+    public void deleteApproval(UUID approval_id);
 }
