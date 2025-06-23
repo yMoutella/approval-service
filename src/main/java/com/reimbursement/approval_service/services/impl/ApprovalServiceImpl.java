@@ -2,9 +2,12 @@ package com.reimbursement.approval_service.services.impl;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.List;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -13,7 +16,6 @@ import com.reimbursement.approval_service.dtos.ApprovalDto;
 import com.reimbursement.approval_service.entities.ApprovalEntity;
 import com.reimbursement.approval_service.enums.Status;
 import com.reimbursement.approval_service.exceptions.ResourceNotFound;
-import com.reimbursement.approval_service.mappers.ApprovalMapper;
 import com.reimbursement.approval_service.repositories.ApprovalRepository;
 import com.reimbursement.approval_service.services.ApprovalService;
 
@@ -23,18 +25,20 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ApprovalServiceImpl implements ApprovalService {
 
-    private final ApprovalRepository repository;
-    private final ApprovalMapper mapper;
+    @Autowired
+    ApprovalRepository repository;
 
     @Override
-    public List<ApprovalEntity> listApprovals() {
-        return repository.findAll();
+    public Page<ApprovalEntity> listApprovals(Specification<ApprovalEntity> spec,
+            Pageable page) {
+        return repository.findAll(spec, page);
     }
 
     @Override
     public void saveApproval(ApprovalDto approvalDto) {
 
-        ApprovalEntity approval = this.mapper.toApprovalEntity(approvalDto);
+        ApprovalEntity approval = new ApprovalEntity();
+        approval.setExpense_id(approvalDto.getExpense_id());
         approval.setStatus(Status.PENDING);
 
         try {
