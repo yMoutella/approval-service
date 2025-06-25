@@ -15,6 +15,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import com.reimbursement.approval_service.dtos.ApprovalDto;
 import com.reimbursement.approval_service.entities.ApprovalEntity;
 import com.reimbursement.approval_service.enums.Status;
+import com.reimbursement.approval_service.exceptions.ResourceDuplicated;
 import com.reimbursement.approval_service.exceptions.ResourceNotFound;
 import com.reimbursement.approval_service.repositories.ApprovalRepository;
 import com.reimbursement.approval_service.services.ApprovalService;
@@ -35,14 +36,20 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
-    public void saveApproval(ApprovalDto approvalDto) {
+    public ApprovalEntity saveApproval(ApprovalDto approvalDto) {
+
+        var existingId_expense_id = repository.findByExpense_id(approvalDto.getExpense_id());
+
+        if (existingId_expense_id.isPresent()) {
+            throw new ResourceDuplicated("expense id: " + approvalDto.getExpense_id() + " already exists!");
+        }
 
         ApprovalEntity approval = new ApprovalEntity();
         approval.setExpense_id(approvalDto.getExpense_id());
         approval.setStatus(Status.PENDING);
 
         try {
-            repository.save(approval);
+            return repository.save(approval);
         } catch (Exception e) {
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }

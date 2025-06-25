@@ -50,12 +50,12 @@ public class ApprovalController {
     }
 
     @PostMapping()
-    @JsonView(ApprovalView.CreateApproval.class)
-    public ResponseEntity<?> createApproval(
-            @RequestBody @Validated(ApprovalView.CreateApproval.class) ApprovalDto approvalDto) {
+    public ResponseEntity<Object> createApproval(
+            @RequestBody @Validated(ApprovalView.CreateApproval.class) @JsonView(ApprovalView.CreateApproval.class) ApprovalDto approvalDto) {
 
-        approvalService.saveApproval(approvalDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Approval created!");
+        ApprovalEntity approval = approvalService.saveApproval(approvalDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(approval);
     }
 
     @PatchMapping(value = "/{approval_id}")

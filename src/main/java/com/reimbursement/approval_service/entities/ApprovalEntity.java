@@ -26,7 +26,6 @@ public class ApprovalEntity {
         this.created_at = LocalDateTime.now(ZoneId.of("UTC"));
         this.updated_at = LocalDateTime.now(ZoneId.of("UTC"));
         this.deleted_at = null;
-
     }
 
     @Id
