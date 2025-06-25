@@ -10,6 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.reimbursement.approval_service.exceptions.ResourceDuplicated;
 import com.reimbursement.approval_service.exceptions.ResourceNotFound;
 
 @RestControllerAdvice
@@ -29,13 +30,18 @@ public class GlobalExceptionHandlerController {
     protected ResponseEntity<Object> genericErrorHandler(
             Exception ex) {
 
-        return mapResponse(ex, HttpStatus.BAD_REQUEST);
+        return mapResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(ResourceNotFound.class)
     protected ResponseEntity<Object> handleResourceNotFound(ResourceNotFound ex) {
 
         return mapResponse(ex, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ResourceDuplicated.class)
+    protected ResponseEntity<Object> handleResourceDuplicated(ResourceDuplicated ex) {
+        return mapResponse(ex, HttpStatus.CONFLICT);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

@@ -16,7 +16,7 @@ public interface ApprovalService {
 
     public ApprovalEntity getApproval(UUID approval_id);
 
-    public void saveApproval(ApprovalDto approvalDto);
+    public ApprovalEntity saveApproval(ApprovalDto approvalDto);
 
     public void saveApproval(Status status, UUID approval_id);
 
