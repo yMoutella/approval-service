@@ -1,10 +1,8 @@
 server:
   port: 8081
-
 spring:
   application:
     name: approval-service
-
   jpa:
     database: POSTGRESQL
     show-sql: true
@@ -14,3 +12,9 @@ spring:
     url: jdbc:postgresql://localhost:5432/approval-db
     username: admin
     password: admin
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/master
+          jwk-set-uri: http://lcoalhost:8080/realms/master/protocol/openid-connect/certs
