@@ -19,7 +19,7 @@ public class ExpensesClient {
 
         ExpensesRequest request = new ExpensesRequest(status);
         ExpensesResponse response = this.client.patch()
-                .uri("http://localhost:8083/expenses/{expense_id}/status", expense_id)
+                .uri("http://localhost:8082/expenses/{expense_id}/status", expense_id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(request)
                 .exchange((req, res) -> {

@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 
+import com.reimbursement.approval_service.clients.ExpensesClient;
 import com.reimbursement.approval_service.dtos.ApprovalDto;
 import com.reimbursement.approval_service.entities.ApprovalEntity;
 import com.reimbursement.approval_service.enums.Status;
@@ -66,6 +67,10 @@ public class ApprovalServiceImpl implements ApprovalService {
 
         try {
             ApprovalEntity approval = approvalOp.get();
+
+            ExpensesClient client = new ExpensesClient();
+            client.updateExpense(status, approval.getExpense_id());
+
             approval.setStatus(status);
             approval.setUpdated_at(LocalDateTime.now(ZoneId.of("UTC")));
 
