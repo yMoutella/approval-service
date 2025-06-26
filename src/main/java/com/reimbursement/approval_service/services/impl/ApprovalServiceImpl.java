@@ -56,7 +56,7 @@ public class ApprovalServiceImpl implements ApprovalService {
     }
 
     @Override
-    public void saveApproval(Status status, UUID approval_id) {
+    public ApprovalEntity saveApproval(Status status, UUID approval_id) {
 
         var approvalOp = repository.findById(approval_id);
 
@@ -69,7 +69,7 @@ public class ApprovalServiceImpl implements ApprovalService {
             approval.setStatus(status);
             approval.setUpdated_at(LocalDateTime.now(ZoneId.of("UTC")));
 
-            repository.save(approval);
+            return repository.save(approval);
         } catch (Exception e) {
             throw new HttpClientErrorException(HttpStatus.INTERNAL_SERVER_ERROR, e.getLocalizedMessage());
         }

@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import com.reimbursement.approval_service.clients.ExpensesClient;
+import com.reimbursement.approval_service.clients.ExpensesResponse;
 import com.reimbursement.approval_service.dtos.ApprovalDto;
 import com.reimbursement.approval_service.entities.ApprovalEntity;
+import com.reimbursement.approval_service.enums.Status;
 import com.reimbursement.approval_service.services.ApprovalService;
 import com.reimbursement.approval_service.specifications.ApprovalSpecification;
 import com.reimbursement.approval_service.views.ApprovalView;
@@ -64,9 +67,13 @@ public class ApprovalController {
             @RequestBody @Validated(ApprovalView.UpdateApproval.class) ApprovalDto approvalDto,
             @PathVariable UUID approval_id) {
 
-        approvalService.saveApproval(approvalDto.getStatus(), approval_id);
+        Status status = approvalDto.getStatus();
+        var approval = approvalService.saveApproval(status, approval_id);
 
-        // Update Expenses-service
+        ExpensesClient client = new ExpensesClient();
+        ExpensesResponse response = client.updateExpense(status, approval.getExpense_id());
+
+        System.out.println(response);
 
         return ResponseEntity.status(HttpStatus.OK).body("Approval updated successfully");
     }
