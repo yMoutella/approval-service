@@ -1,5 +1,6 @@
 package com.reimbursement.approval_service.clients;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
@@ -11,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExpensesResponse {
+public class ExpensesResponse implements Serializable {
     private UUID id;
     private String description;
     private String userId;
