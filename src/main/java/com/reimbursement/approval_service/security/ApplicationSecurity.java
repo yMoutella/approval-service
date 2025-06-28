@@ -17,6 +17,7 @@ public class ApplicationSecurity {
     @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
     String jwkSetUri;
 
+    @SuppressWarnings("unused")
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
@@ -31,6 +32,7 @@ public class ApplicationSecurity {
     }
 
     @Bean
+    @SuppressWarnings("unused")
     JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withJwkSetUri(this.jwkSetUri).build();
     }

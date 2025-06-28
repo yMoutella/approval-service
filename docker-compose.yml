@@ -17,3 +17,14 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: approval-db
+
+  mqtt:
+    image: emqx/emqx:latest
+    environment:
+      - "EMQX_LISTENERS_TCP_DEFAULT_BIND=1884"
+      - "EMQX_NAME=MQTT"
+      - "EMQX_HOST=localhost"
+    ports:
+      - "1883:1883"
+      - "1884:1884"
+      - "18083:18083"

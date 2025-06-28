@@ -2,7 +2,7 @@ package com.reimbursement.approval_service.controllers;
 
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.eclipse.paho.client.mqttv3.MqttException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -24,6 +24,7 @@ import com.reimbursement.approval_service.dtos.ApprovalDto;
 import com.reimbursement.approval_service.entities.ApprovalEntity;
 import com.reimbursement.approval_service.enums.Status;
 import com.reimbursement.approval_service.services.ApprovalService;
+import com.reimbursement.approval_service.services.ExpenseTopicService;
 import com.reimbursement.approval_service.specifications.ApprovalSpecification;
 import com.reimbursement.approval_service.views.ApprovalView;
 
@@ -32,8 +33,13 @@ import com.reimbursement.approval_service.views.ApprovalView;
 @Validated
 public class ApprovalController {
 
-    @Autowired
     ApprovalService approvalService;
+    ExpenseTopicService expenseTopicService;
+
+    public ApprovalController(ApprovalService approvalService, ExpenseTopicService expenseTopicService) {
+        this.approvalService = approvalService;
+        this.expenseTopicService = expenseTopicService;
+    }
 
     @GetMapping()
     public ResponseEntity<Object> listApprovals(ApprovalSpecification spec,
@@ -66,7 +72,14 @@ public class ApprovalController {
             @PathVariable UUID approval_id) {
 
         Status status = approvalDto.getStatus();
-        var approval = approvalService.saveApproval(status, approval_id);
+        ApprovalEntity updatedApproval = approvalService.saveApproval(status, approval_id);
+        approvalDto.setExpense_id(updatedApproval.getExpense_id());
+        // Generate event on MQTT to update the expenses-service;
+        try {
+            expenseTopicService.publishMessage(approvalDto);
+        } catch (MqttException e) {
+            System.out.println(e);
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body("Approval updated successfully");
     }
