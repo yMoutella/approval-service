@@ -25,8 +25,8 @@ import com.reimbursement.approval_service.adapters.inbound.views.ApprovalView;
 import com.reimbursement.approval_service.application.services.ApprovalService;
 import com.reimbursement.approval_service.application.services.ExpenseTopicService;
 import com.reimbursement.approval_service.application.specifications.ApprovalSpecification;
-import com.reimbursement.approval_service.domain.Approval.Approval;
-import com.reimbursement.approval_service.domain.Approval.ApprovalStatus;
+import com.reimbursement.approval_service.domain.approval.Approval;
+import com.reimbursement.approval_service.domain.approval.ApprovalStatus;
 
 @RestController
 @RequestMapping(value = "approvals")

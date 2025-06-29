@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 
 import com.reimbursement.approval_service.domain.approval.Approval;
 
-public interface ApprovalRepository
+public interface JpaApprovalRepository
         extends JpaRepository<Approval, UUID>, JpaSpecificationExecutor<Approval> {
 
     @Query(value = "SELECT * FROM approvals WHERE expense_id = :expense_id", nativeQuery = true)

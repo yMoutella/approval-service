@@ -23,7 +23,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 import com.reimbursement.approval_service.adapters.outbound.repositories.ApprovalRepository;
 import com.reimbursement.approval_service.application.usecases.ApprovalUsecase;
-import com.reimbursement.approval_service.domain.Approval.Approval;
+import com.reimbursement.approval_service.domain.approval.Approval;
 import com.reimbursement.approval_service.infrastructure.exceptions.ResourceNotFound;
 
 @ExtendWith(MockitoExtension.class)

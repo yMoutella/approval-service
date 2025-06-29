@@ -5,7 +5,7 @@ import java.util.UUID;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.reimbursement.approval_service.adapters.inbound.views.ApprovalView;
-import com.reimbursement.approval_service.domain.Approval.ApprovalStatus;
+import com.reimbursement.approval_service.domain.approval.ApprovalStatus;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.reimbursement.approval_service.domain.Approval;
+package com.reimbursement.approval_service.domain.approval;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;

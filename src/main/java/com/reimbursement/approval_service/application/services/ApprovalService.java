@@ -7,8 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import com.reimbursement.approval_service.adapters.inbound.dtos.ApprovalDto;
-import com.reimbursement.approval_service.domain.Approval.Approval;
-import com.reimbursement.approval_service.domain.Approval.ApprovalStatus;
+import com.reimbursement.approval_service.domain.approval.Approval;
+import com.reimbursement.approval_service.domain.approval.ApprovalStatus;
 
 public interface ApprovalService {
 
