@@ -21,16 +21,16 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
-import com.reimbursement.approval_service.entities.ApprovalEntity;
-import com.reimbursement.approval_service.exceptions.ResourceNotFound;
-import com.reimbursement.approval_service.repositories.ApprovalRepository;
-import com.reimbursement.approval_service.services.impl.ApprovalServiceImpl;
+import com.reimbursement.approval_service.adapters.outbound.repositories.ApprovalRepository;
+import com.reimbursement.approval_service.application.usecases.ApprovalUsecase;
+import com.reimbursement.approval_service.domain.Approval.Approval;
+import com.reimbursement.approval_service.infrastructure.exceptions.ResourceNotFound;
 
 @ExtendWith(MockitoExtension.class)
 public class ApprovalServiceTest {
 
     @InjectMocks
-    private ApprovalServiceImpl service;
+    private ApprovalUsecase service;
 
     @Mock
     private ApprovalRepository repository;
@@ -39,13 +39,13 @@ public class ApprovalServiceTest {
     @DisplayName(value = "Should return a single approval")
     public void should_return_a_single_approval() {
 
-        ApprovalEntity approval = new ApprovalEntity();
+        Approval approval = new Approval();
         approval.setId(UUID.fromString("f7435e98-9510-4d52-a561-d1bcf52a0089"));
 
         when(repository.findById(UUID.fromString("f7435e98-9510-4d52-a561-d1bcf52a0089")))
                 .thenReturn(Optional.of(approval));
 
-        ApprovalEntity mockApprovals = service
+        Approval mockApprovals = service
                 .getApproval(UUID.fromString("f7435e98-9510-4d52-a561-d1bcf52a0089"));
 
         assertNotNull(mockApprovals);
@@ -57,7 +57,7 @@ public class ApprovalServiceTest {
     @DisplayName(value = "Should return a not found exception")
     public void should_return_a_not_found_exception() {
         try {
-            ApprovalEntity mockApprovals = service
+            Approval mockApprovals = service
                     .getApproval(UUID.fromString("f7435e98-9510-4d52-a561-d1bcf52a0080"));
         } catch (Exception e) {
             assertInstanceOf(ResourceNotFound.class, e);
@@ -70,15 +70,15 @@ public class ApprovalServiceTest {
     public void should_return_a_list_of_not_deleted_approvals() {
 
         Pageable page = PageRequest.of(0, 10);
-        Specification<ApprovalEntity> spec = (root, query, cr) -> cr.isNotNull(root.get("deleted_at"));
+        Specification<Approval> spec = (root, query, cr) -> cr.isNotNull(root.get("deleted_at"));
 
-        ApprovalEntity e1 = new ApprovalEntity();
+        Approval e1 = new Approval();
         Page mockPage = new PageImpl<>(List.of(e1));
 
         when(repository.findAll(spec, page)).thenReturn(mockPage);
 
         try {
-            Page<ApprovalEntity> approvalsReturned = service.listApprovals(spec, page);
+            Page<Approval> approvalsReturned = service.listApprovals(spec, page);
 
             assertThat(approvalsReturned).hasSize(1);
             assertNotNull(approvalsReturned);
