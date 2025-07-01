@@ -26,12 +26,6 @@ public class GlobalExceptionHandlerController {
         return new ResponseEntity<>(response, status);
     }
 
-    @ExceptionHandler(Exception.class)
-    protected ResponseEntity<Object> genericErrorHandler(
-            Exception ex) {
-
-        return mapResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
 
     @ExceptionHandler(ResourceNotFound.class)
     protected ResponseEntity<Object> handleResourceNotFound(ResourceNotFound ex) {
