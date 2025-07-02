@@ -29,6 +29,7 @@ public class ApplicationSecurity {
                         .requestMatchers(HttpMethod.POST, "/approvals").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/approvals/**").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/approvals/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/approvals/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/approvals").permitAll())
                 .oauth2ResourceServer((oauth2) -> oauth2
                         .jwt(jwt -> jwt

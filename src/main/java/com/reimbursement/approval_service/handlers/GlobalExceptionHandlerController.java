@@ -26,7 +26,6 @@ public class GlobalExceptionHandlerController {
         return new ResponseEntity<>(response, status);
     }
 
-
     @ExceptionHandler(ResourceNotFound.class)
     protected ResponseEntity<Object> handleResourceNotFound(ResourceNotFound ex) {
 

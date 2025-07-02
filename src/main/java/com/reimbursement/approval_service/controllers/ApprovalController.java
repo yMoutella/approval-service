@@ -57,6 +57,7 @@ public class ApprovalController {
         return ResponseEntity.status(HttpStatus.OK).body(approval);
     }
 
+    @PreAuthorize("hasAnyRole({'admin'})")
     @PostMapping()
     public ResponseEntity<Object> createApproval(
             @RequestBody @Validated(ApprovalView.CreateApproval.class) @JsonView(ApprovalView.CreateApproval.class) ApprovalDto approvalDto) {
